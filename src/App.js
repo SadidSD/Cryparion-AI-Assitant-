@@ -4,7 +4,7 @@ import './App.css';
 import axios from 'axios';
 import profile from './images/cryparion.png'
 
-const API_URL = 'http://localhost:3001';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 function App() {
   const [messages, setMessages] = useState([]);
