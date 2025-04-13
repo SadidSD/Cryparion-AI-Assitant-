@@ -1,11 +1,10 @@
-
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -19,13 +18,13 @@ const USER_INFO = {
   contact: "cryparion@gmail.com",
   education: "BSc in Computer Science and Engineering",
   institution: "North South University",
-  technologies: ["React", "Node.js", "Express", "MongoDB", "javaScript","git", "github"],
+  technologies: ["React", "Node.js", "Express", "MongoDB", "javaScript", "git", "github"],
 };
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL_NAME = "moonshotai/kimi-vl-a3b-thinking:free";
 
-const SYSTEM_PROMPT = `You are an AI assistant created by ${USER_INFO.name} and you are the personal assistant of  ${USER_INFO.name}. Follow these rules:
+const SYSTEM_PROMPT = `You are an AI assistant created by ${USER_INFO.name} and you are the personal assistant of ${USER_INFO.name}. Follow these rules:
 1. Only mention being ${USER_INFO.name}'s assistant when asked about your identity
 2. Use this information about your creator when relevant:
    - Name: ${USER_INFO.name}
@@ -82,7 +81,8 @@ app.post('/api/chat', async (req, res) => {
       {
         headers: {
           'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'http://localhost:3000',
+          // Updated HTTP-Referer to be dynamic or remove it if not needed
+          'HTTP-Referer': process.env.CLIENT_URL || 'http://localhost:3000',
           'X-Title': 'Technical Assistant',
           'Content-Type': 'application/json',
           'X-API-Version': '1.0.0'
@@ -101,7 +101,6 @@ app.post('/api/chat', async (req, res) => {
       .trim();
 
     res.json({ reply: finalReply });
-
   } catch (error) {
     console.error('API Error:', error.response?.data || error.message);
     const errorMessage = error.response?.data?.error?.message || 
@@ -112,5 +111,5 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });
